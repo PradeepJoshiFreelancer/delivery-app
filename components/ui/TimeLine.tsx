@@ -1,15 +1,9 @@
+import { Parcel_Transit_Status } from "@prisma/client";
 import React from "react";
+import { transitStatusDetails } from "../store/interface/parcel";
 
 type Props = {
-  deliveryTransitDetails: {
-    deliveryTransitId: number;
-    deliveryId: number;
-    node?: string;
-    updateBy?: string;
-    updateByContactNumber?: string;
-    status: string;
-    updatedAt: string;
-  }[];
+  deliveryTransitDetails: transitStatusDetails[];
 };
 
 const TimeLine = ({ deliveryTransitDetails }: Props) => {
@@ -21,17 +15,17 @@ const TimeLine = ({ deliveryTransitDetails }: Props) => {
       <ol className="relative border-s border-gray-200 dark:border-gray-700">
         {deliveryTransitDetails.map((trackingDetail) => {
           return (
-            <li className="ms-4" key={trackingDetail.deliveryTransitId}>
+            <li className="ms-4" key={trackingDetail.deliveryStatus.id}>
               <div className="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -start-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"></div>
               <time className="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500">
-                {trackingDetail.updatedAt}
+                {trackingDetail.deliveryStatus.updatedAt.toISOString()}
               </time>
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {`${trackingDetail.node} - ${trackingDetail.status}`}
+                {`${trackingDetail.node} - ${trackingDetail.deliveryStatus.status}`}
               </h3>
               <p className="text-base font-normal text-gray-500 dark:text-gray-400">
-                `Update by {trackingDetail.updateBy} - $
-                {trackingDetail.updateByContactNumber}`
+                Update by {trackingDetail.employee?.name} -{" "}
+                {trackingDetail.employee?.email}
               </p>
             </li>
           );

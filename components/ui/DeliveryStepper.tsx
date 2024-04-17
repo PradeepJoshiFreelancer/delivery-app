@@ -1,7 +1,8 @@
+import { finalStatuses } from "@prisma/client";
 import React from "react";
 
 type Props = {
-  status: string;
+  status: finalStatuses;
 };
 
 const DeliveryStepper = ({ status }: Props) => {
@@ -17,9 +18,11 @@ const DeliveryStepper = ({ status }: Props) => {
 
   return (
     <ol className="flex items-center w-full text-sm font-medium text-center text-gray-500 dark:text-gray-400 sm:text-base my-6">
-      <li className={status === "1" ? listSelected : listNotSelected}>
+      <li
+        className={status === "yetToDispatch" ? listSelected : listNotSelected}
+      >
         <span className="flex items-center  after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
-          {status === "1" && (
+          {status === "yetToDispatch" && (
             <svg
               className="w-3.5 h-3.5 sm:w-4 sm:h-4 me-2.5"
               aria-hidden="true"
@@ -34,9 +37,9 @@ const DeliveryStepper = ({ status }: Props) => {
           Pending
         </span>
       </li>
-      <li className={status === "2" ? listSelected : listNotSelected}>
+      <li className={status === "inTrasit" ? listSelected : listNotSelected}>
         <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
-          {status === "2" && (
+          {status === "inTrasit" && (
             <svg
               className="w-3.5 h-3.5 sm:w-4 sm:h-4 me-2.5"
               aria-hidden="true"
@@ -51,9 +54,11 @@ const DeliveryStepper = ({ status }: Props) => {
           In transit
         </span>
       </li>
-      <li className={status === "3" ? listSelected : listNotSelected}>
+      <li
+        className={status === "outForDelivery" ? listSelected : listNotSelected}
+      >
         <span className="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
-          {status === "3" && (
+          {status === "outForDelivery" && (
             <svg
               className="w-3.5 h-3.5 sm:w-4 sm:h-4 me-2.5"
               aria-hidden="true"
@@ -69,7 +74,7 @@ const DeliveryStepper = ({ status }: Props) => {
         </span>
       </li>
       <li className="flex items-center">
-        {status === "4" && (
+        {status === "delivered" && (
           <svg
             className="w-3.5 h-3.5 sm:w-4 sm:h-4 me-2.5"
             aria-hidden="true"

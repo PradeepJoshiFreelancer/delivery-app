@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "next-themes";
-import { RecoilProvider } from "@/components/providers";
 import Sidebar from "@/components/Sidebar";
 import { cn } from "@/components/lib/utils";
+import { Providers } from "@/provider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,11 +28,9 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <ThemeProvider>
-          <RecoilProvider>
-            <Sidebar>{children}</Sidebar>
-          </RecoilProvider>
-        </ThemeProvider>
+        <Providers>
+          <Sidebar>{children}</Sidebar>
+        </Providers>
       </body>
     </html>
   );

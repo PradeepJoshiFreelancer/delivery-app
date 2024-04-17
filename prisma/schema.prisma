@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum finalStatuses {
+  yetToDispatch
+  inTrasit
+  outForDelivery
+  delivered
+}
+
+enum roles {
+  employee
+  nodeManger
+  admin
+}
+
+
+model Parcel{
+    id  Int       @id @default(autoincrement())
+    toName        String
+    toPhone       String
+    toAddress     String
+    toCity        String
+    fromName      String
+    fromPhone     String
+    fromAddress   String
+    fromCity      String
+    currentStatus finalStatuses
+    dispatchDate  DateTime @default(now())
+    expectedDate  DateTime @default(now())
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    allParcels    Parcel_Transit_Status[]
+}
+
+model Node{
+    id            Int        @id @default(autoincrement())
+    nodeName      String
+    nodeCity      String
+    nodeAddress   String @db.VarChar(100)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt 
+    allParcels    Parcel_Transit_Status[]
+}
+
+model Employee {
+  id                Int                 @id @default(autoincrement())
+  email             String              @unique
+  name              String?
+  password          String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt 
+  allParcels        Parcel_Transit_Status[]
+}
+
+model Parcel_Transit_Status{
+    id            Int        @id @default(autoincrement())
+    parcel        Parcel @relation(fields: [parcelId], references: [id])
+    parcelId      Int
+    employee      Employee @relation(fields: [updatedById], references: [id])
+    updatedById   Int
+    node          Node  @relation(fields: [nodeId], references: [id])
+    nodeId        Int
+    status        finalStatuses
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt 
+}
