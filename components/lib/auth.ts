@@ -1,8 +1,9 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import prisma from "@/components/db/prisma";
+import { NextAuthOptions } from "next-auth";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -60,7 +61,7 @@ export const authOptions = {
     }),
   ],
   pages: {
-    signin: "/signin",
+    signIn: "/signin",
   },
   secret: process.env.JWT_SECRET || "secret",
   callbacks: {
