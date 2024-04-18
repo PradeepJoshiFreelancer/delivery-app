@@ -63,6 +63,9 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/signin",
   },
+  session: {
+    strategy: "jwt",
+  },
   secret: process.env.JWT_SECRET || "secret",
   callbacks: {
     // TODO: can u fix the type here? Using any is bad

@@ -1,9 +1,11 @@
 import prisma from "@/components/db/prisma";
+import { revalidatePath } from "next/cache";
 
 export const addNode = async (newNode: any) => {
   const node = await prisma.node.create({
     data: newNode,
   });
+  revalidatePath("/node/**");
   return node;
 };
 export const getAllNodes = async () => {
