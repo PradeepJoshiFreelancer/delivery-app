@@ -1,7 +1,15 @@
-import React from "react";
+"use client";
+
+import React, { useEffect } from "react";
 import RowHeader from "../ui/admin/RowHeader";
 import Link from "next/link";
-import { getAllNodesDetails } from "../store/handller/node";
+import {
+  deleteNodeById,
+  getAllNodesDetails,
+} from "../store/handller/prisma/node";
+import { useRecoilState } from "recoil";
+import { nodeAtom } from "../store/atom/node";
+import { toast } from "react-toastify";
 
 type Props = {};
 
@@ -12,8 +20,30 @@ const tbaleHeaders = [
   { id: 6, value: "Actions", className: "sr-only" },
 ];
 
-const NodeTable = async (props: Props) => {
-  const allNodes = await getAllNodesDetails();
+const NodeTable = (props: Props) => {
+  const [allNodes, setAllNodes] = useRecoilState(nodeAtom);
+
+  useEffect(() => {
+    if (allNodes.length === 0) {
+      getAllNodesDetails().then((response) => {
+        if (response.node.length > 0) {
+          setAllNodes(response.node);
+          console.log("Node data loaded to Recoil.");
+        }
+      });
+    }
+  }, [allNodes, setAllNodes]);
+
+  async function nodeDeleteHandller(nodeId: number) {
+    const response = await deleteNodeById(nodeId);
+    if (response.status === 200) {
+      setAllNodes((prevItems) =>
+        prevItems.filter((item) => item.id !== nodeId)
+      );
+      toast.success(`Node ${response.node?.nodeName} deleted!!`);
+    }
+    console.log(4);
+  }
 
   return (
     <div className="overflow-x-auto">
@@ -30,7 +60,7 @@ const NodeTable = async (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {allNodes.node.map((item) => (
+          {allNodes.map((item) => (
             <tr className="border-b dark:border-gray-700" key={item.id}>
               <th
                 scope="row"
@@ -41,9 +71,21 @@ const NodeTable = async (props: Props) => {
               <td className="px-4 py-3">{item.nodeCity}</td>
               <td className="px-4 py-3">{item.nodeAddress}</td>
               <td className="px-4 py-3">
-                <Link href={`/node/update-node/${item.id}`} className="py-3">
-                  Edit
-                </Link>
+                <div className="flex justify-around">
+                  <Link
+                    href={`/node/update-node/${item.id}`}
+                    className="py-3 text-blue-600 underline"
+                  >
+                    Edit
+                  </Link>
+                  <Link
+                    href="#"
+                    onClick={() => nodeDeleteHandller(item.id)}
+                    className="py-3 text-red-600 underline"
+                  >
+                    Delete
+                  </Link>
+                </div>
               </td>
             </tr>
           ))}

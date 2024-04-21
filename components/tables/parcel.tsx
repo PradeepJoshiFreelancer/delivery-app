@@ -1,7 +1,15 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import RowHeader from "../ui/admin/RowHeader";
 import Link from "next/link";
-import { getAllParcelData } from "../store/handller/parcel";
+import {
+  deleteParcelById,
+  getAllParcelData,
+  getAllParcelTrackingData,
+} from "../store/handller/prisma/parcel";
+import { useRecoilState } from "recoil";
+import { parcelAtom, parcelStatus } from "../store/atom/parcel";
+import { toast } from "react-toastify";
 
 type Props = {};
 
@@ -14,9 +22,40 @@ const tbaleHeaders = [
   { id: 6, value: "Actions", className: "sr-only" },
 ];
 
-const ParcelTable = async (props: Props) => {
-  const allParcel = await getAllParcelData();
-
+const ParcelTable = (props: Props) => {
+  const [allParcel, setAllParcel] = useRecoilState(parcelAtom);
+  const [allParcelTracking, setAllParcelTracking] =
+    useRecoilState(parcelStatus);
+  useEffect(() => {
+    if (allParcel.length === 0) {
+      getAllParcelData().then((response) => {
+        setAllParcel(response.parcel);
+        console.log("Parcel data loaded to Recoil.");
+      });
+    }
+    // if (allParcelTracking.length === 0) {
+    //   getAllParcelTrackingData().then((response) => {
+    //     setAllParcelTracking(
+    //       response.allParcelTracking.map((item) => ({
+    //         deliveryStatus: item,
+    //         employee: item.employee,
+    //         node: item.node,
+    //       }))
+    //     );
+    //     console.log("Tracking data loaded to Recoil.");
+    //   });
+    // }
+  }, [allParcel, allParcelTracking, setAllParcel, setAllParcelTracking]);
+  // const allParcel = getAllParcelData();
+  async function parcelDeleteHandller(parcelId: number) {
+    const response = await deleteParcelById(parcelId);
+    if (response.status === 200) {
+      setAllParcel((prevItems) =>
+        prevItems.filter((item) => item.id !== parcelId)
+      );
+      toast.success(`Parcel Id ${response.parcel?.id} deleted!!`);
+    }
+  }
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -32,7 +71,7 @@ const ParcelTable = async (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {allParcel.parcel.map((item) => (
+          {allParcel.map((item) => (
             <tr className="border-b dark:border-gray-700" key={item.id}>
               <th
                 scope="row"
@@ -45,9 +84,21 @@ const ParcelTable = async (props: Props) => {
               <td className="px-4 py-3">{item.currentStatus}</td>
               <td className="px-4 py-3">{new Date().toDateString()}</td>
               <td className="px-4 py-3">
-                <Link href={`/node/update-parcel/${item.id}`} className="py-3">
-                  Edit
-                </Link>
+                <div className="flex justify-around">
+                  <Link
+                    href={`/parcel/update-parcel/${item.id}`}
+                    className="py-3 text-blue-600 underline"
+                  >
+                    Edit
+                  </Link>
+                  <Link
+                    href="#"
+                    className="py-3 text-red-600 underline"
+                    onClick={() => parcelDeleteHandller(item.id)}
+                  >
+                    Delete
+                  </Link>
+                </div>
               </td>
             </tr>
           ))}

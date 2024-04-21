@@ -1,5 +1,6 @@
 "use client";
 import { FormEvent, useState } from "react";
+import ErrorMessage from "./ErrorMessage";
 
 type Props = {
   popTrackingRecord: (trackingId: number) => void;
@@ -8,6 +9,7 @@ type Props = {
 const SearchBox = ({ popTrackingRecord }: Props) => {
   const [trackingId, setTrackingId] = useState({
     value: 0,
+    isLoading: false,
     errorMessage: "",
   });
 
@@ -58,10 +60,11 @@ const SearchBox = ({ popTrackingRecord }: Props) => {
           id="default-search"
           onChange={(event) => {
             if (event.target.value === "") {
-              setTrackingId({
+              setTrackingId((prevValues) => ({
+                ...prevValues,
                 value: 0,
                 errorMessage: "",
-              });
+              }));
               return;
             }
             if (!Number(+event.target.value)) {
@@ -88,9 +91,7 @@ const SearchBox = ({ popTrackingRecord }: Props) => {
           Search
         </button>
       </div>
-      {trackingId.errorMessage !== "" && (
-        <p className="text-red-600 text-xs ml-2">{trackingId.errorMessage}</p>
-      )}
+      <ErrorMessage errorMsg={trackingId.errorMessage} />
     </form>
   );
 };
