@@ -2,8 +2,10 @@ import React from "react";
 
 type Props = {};
 
-const AddUpdatePage = (props: Props) => {
+const AddUpdateAdmin = (props: Props) => {
+  console.log("AddUpdateAdmin page loaded");
+
   return <div>Add Update Page</div>;
 };
 
-export default AddUpdatePage;
+export default AddUpdateAdmin;

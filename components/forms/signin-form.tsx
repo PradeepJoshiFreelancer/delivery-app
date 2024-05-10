@@ -2,17 +2,20 @@
 import { signIn } from "next-auth/react";
 import React from "react";
 import Input from "../ui/Input";
+import { toast } from "react-toastify";
 
 type Props = {};
 
 const SigninForm = (props: Props) => {
   const onSubmitHandller = async (formData: FormData) => {
-    await signIn("credentials", {
+    const response = await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
       redirect: true,
       callbackUrl: "http://localhost:3000",
     });
+    if (response?.status === 200) toast.success("Login Successfull!");
+    else toast.error("Invalid credentials! Unable to login.");
   };
   return (
     <form className="space-y-4 md:space-y-6" action={onSubmitHandller}>

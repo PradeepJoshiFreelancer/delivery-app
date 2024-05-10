@@ -6,7 +6,7 @@ import {
   addNewNode,
   getAllNodesDetails,
   updateNodeData,
-} from "../store/handller/prisma/node";
+} from "../store/handller/node";
 import { toast } from "react-toastify";
 import ErrorMessage from "../ui/ErrorMessage";
 import { useRecoilState, useRecoilValue } from "recoil";

@@ -1,5 +1,5 @@
 import AdminSearchForm from "@/components/forms/admin-search";
-import ParcelTable from "@/components/tables/parcel";
+import ParcelTable from "@/components/ui/tables/parcel";
 import ActionButtons from "@/components/ui/admin/Action";
 import BottonNavigation from "@/components/ui/admin/BottonNavigation";
 import React from "react";
@@ -7,6 +7,8 @@ import React from "react";
 type Props = {};
 
 const AdminPage = (props: Props) => {
+  console.log("Admin page loaded");
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
       <div className="mx-auto max-w-screen-xl px-4 lg:px-12">

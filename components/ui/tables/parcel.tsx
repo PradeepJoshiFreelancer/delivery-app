@@ -1,14 +1,14 @@
 "use client";
 import React, { useEffect } from "react";
-import RowHeader from "../ui/admin/RowHeader";
+import RowHeader from "../admin/RowHeader";
 import Link from "next/link";
 import {
   deleteParcelById,
   getAllParcelData,
   getAllParcelTrackingData,
-} from "../store/handller/prisma/parcel";
+} from "../../store/handller/parcel";
 import { useRecoilState } from "recoil";
-import { parcelAtom, parcelStatus } from "../store/atom/parcel";
+import { parcelAtom, parcelStatus } from "../../store/atom/parcel";
 import { toast } from "react-toastify";
 
 type Props = {};
@@ -19,7 +19,7 @@ const tbaleHeaders = [
   { id: 3, value: "To" },
   { id: 4, value: "Current Status" },
   { id: 5, value: "Last updated date" },
-  { id: 6, value: "Actions", className: "sr-only" },
+  { id: 6, value: "Actions", className: "text-center" },
 ];
 
 const ParcelTable = (props: Props) => {
@@ -33,18 +33,6 @@ const ParcelTable = (props: Props) => {
         console.log("Parcel data loaded to Recoil.");
       });
     }
-    // if (allParcelTracking.length === 0) {
-    //   getAllParcelTrackingData().then((response) => {
-    //     setAllParcelTracking(
-    //       response.allParcelTracking.map((item) => ({
-    //         deliveryStatus: item,
-    //         employee: item.employee,
-    //         node: item.node,
-    //       }))
-    //     );
-    //     console.log("Tracking data loaded to Recoil.");
-    //   });
-    // }
   }, [allParcel, allParcelTracking, setAllParcel, setAllParcelTracking]);
   // const allParcel = getAllParcelData();
   async function parcelDeleteHandller(parcelId: number) {
@@ -90,6 +78,12 @@ const ParcelTable = (props: Props) => {
                     className="py-3 text-blue-600 underline"
                   >
                     Edit
+                  </Link>
+                  <Link
+                    href={`/parcel/add-tracking/${item.id}`}
+                    className="py-3 text-blue-600 underline"
+                  >
+                    Add Tracking
                   </Link>
                   <Link
                     href="#"

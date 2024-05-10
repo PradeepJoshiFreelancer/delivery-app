@@ -9,7 +9,7 @@ import Button from "./ui/Button";
 function Sidebar({ children }: { children: ReactNode }) {
   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
 
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   return (
     <>

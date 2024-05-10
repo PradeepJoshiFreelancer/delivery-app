@@ -1,5 +1,4 @@
 import prisma from "@/components/db/prisma";
-import { Node } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { revalidatePath } from "next/cache";
 

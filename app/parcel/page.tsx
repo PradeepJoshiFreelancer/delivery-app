@@ -2,8 +2,10 @@ import React from "react";
 
 type Props = {};
 
-const NodeTracking = (props: Props) => {
+const ParcelTracking = (props: Props) => {
+  console.log("ParcelTracking page loaded");
+
   return <div>Parcel Traceking</div>;
 };
 
-export default NodeTracking;
+export default ParcelTracking;

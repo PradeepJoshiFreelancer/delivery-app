@@ -2,24 +2,25 @@
 
 import { nodeAtom } from "@/components/store/atom/node";
 import { parcelAtom, parcelStatus } from "@/components/store/atom/parcel";
-import { getAllNodesDetails } from "@/components/store/handller/prisma/node";
+import { getAllNodesDetails } from "@/components/store/handller/node";
 import {
   getAllParcelData,
   getAllParcelTrackingData,
   parcelById,
   parcelTrackingByParcelId,
-} from "@/components/store/handller/prisma/parcel";
-import { transitStatusDetails } from "@/components/store/interface/parcel";
+} from "@/components/store/handller/parcel";
 import DeliveryStepper from "@/components/ui/DeliveryStepper";
 import SearchBox from "@/components/ui/SearchBox";
 import TableDeliveryDetails from "@/components/ui/TableDeliveryDetails";
 import TimeLine from "@/components/ui/TimeLine";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { Parcel } from "@prisma/client";
+import { Parcel, Parcel_Transit_Status } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
 export default function Home() {
+  console.log("Root page loaded");
+
   const [allParcel, setAllParcel] = useRecoilState(parcelAtom);
   const [allParcelTracking, setAllParcelTracking] =
     useRecoilState(parcelStatus);
@@ -27,7 +28,7 @@ export default function Home() {
 
   const [trackingDetails, setTrackingDetails] = useState<Parcel | null>(null);
   const [deliveryTransitDetails, setdeliveryTransitDetails] = useState<
-    transitStatusDetails[] | []
+    Parcel_Transit_Status[] | []
   >([]);
 
   useEffect(() => {
@@ -39,13 +40,9 @@ export default function Home() {
     }
     if (allParcelTracking.length === 0) {
       getAllParcelTrackingData().then((response) => {
-        setAllParcelTracking(
-          response.allParcelTracking.map((item) => ({
-            deliveryStatus: item,
-            employee: item.employee,
-            node: item.node,
-          }))
-        );
+        console.log(response);
+
+        setAllParcelTracking(response.allParcelTracking);
         console.log("Tracking data loaded to Recoil.");
       });
       if (allNodes.length === 0) {
@@ -80,31 +77,30 @@ export default function Home() {
         setTrackingDetails(null);
       }
     }
+    console.log(`allParcelTracking = ${JSON.stringify(allParcelTracking)}`);
+
     const parcelTrackingState = allParcelTracking.filter(
-      (item) => item.deliveryStatus.parcelId === trackingId
+      (item) => item.parcelId === trackingId
     );
+    console.log(`parcelTrackingState = ${JSON.stringify(parcelTrackingState)}`);
+
     if (parcelTrackingState.length > 0) {
       setAllParcelTracking(parcelTrackingState);
+      setdeliveryTransitDetails(parcelTrackingState);
       console.log("Tracking data returned from recoil");
     } else {
+      console.log("Loading all tracking from db");
+
       const { status, allParcelTracking } = await parcelTrackingByParcelId(
         trackingId
       );
+      console.log(`status = ${status}`);
+      console.log(`allParcelTracking = ${allParcelTracking}`);
 
       if (status === 200 && allParcelTracking && allParcelTracking.length > 0) {
         console.log("Tracking returned from recoil");
-        const resultTrackingData: transitStatusDetails[] =
-          allParcelTracking.map((item) => ({
-            deliveryStatus: item,
-            employee: item.employee,
-            node: item.node,
-          }));
-        setAllParcelTracking(resultTrackingData);
-        setdeliveryTransitDetails(
-          resultTrackingData.filter(
-            (item) => item.deliveryStatus.id === trackingId
-          )
-        );
+        setAllParcelTracking(allParcelTracking);
+        setdeliveryTransitDetails(allParcelTracking);
       } else {
         setdeliveryTransitDetails([]);
       }

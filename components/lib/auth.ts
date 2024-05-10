@@ -2,6 +2,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import prisma from "@/components/db/prisma";
 import { NextAuthOptions } from "next-auth";
+import { toast } from "react-toastify";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -37,6 +38,7 @@ export const authOptions: NextAuthOptions = {
               email: existingUser.email,
             };
           }
+          toast.error("Unable to login!");
           return null;
         }
 
@@ -66,13 +68,12 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  secret: process.env.JWT_SECRET || "secret",
   callbacks: {
     // TODO: can u fix the type here? Using any is bad
     async session({ token, session }: any) {
       session.user.id = token.sub;
-
       return session;
     },
   },
+  secret: process.env.JWT_SECRET || "secret",
 };

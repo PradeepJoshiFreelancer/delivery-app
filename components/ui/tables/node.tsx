@@ -1,19 +1,17 @@
 "use client";
 
 import React, { useEffect } from "react";
-import RowHeader from "../ui/admin/RowHeader";
+import RowHeader from "../admin/RowHeader";
 import Link from "next/link";
-import {
-  deleteNodeById,
-  getAllNodesDetails,
-} from "../store/handller/prisma/node";
+import { deleteNodeById, getAllNodesDetails } from "../../store/handller/node";
 import { useRecoilState } from "recoil";
-import { nodeAtom } from "../store/atom/node";
+import { nodeAtom } from "../../store/atom/node";
 import { toast } from "react-toastify";
 
 type Props = {};
 
 const tbaleHeaders = [
+  { id: 1, value: "Id" },
   { id: 1, value: "City" },
   { id: 2, value: "Name" },
   { id: 3, value: "Addess" },
@@ -69,6 +67,7 @@ const NodeTable = (props: Props) => {
                 {item.id}
               </th>
               <td className="px-4 py-3">{item.nodeCity}</td>
+              <td className="px-4 py-3">{item.nodeName}</td>
               <td className="px-4 py-3">{item.nodeAddress}</td>
               <td className="px-4 py-3">
                 <div className="flex justify-around">

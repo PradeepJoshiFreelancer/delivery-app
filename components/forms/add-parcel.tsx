@@ -6,13 +6,15 @@ import {
   addNewParcel,
   getAllParcelData,
   updateParcelData,
-} from "../store/handller/prisma/parcel";
+} from "../store/handller/parcel";
 import { redirect, useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import ErrorMessage from "../ui/ErrorMessage";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { parcelAtom } from "../store/atom/parcel";
-import { getAllNodesDetails } from "../store/handller/prisma/node";
+import { getAllNodesDetails } from "../store/handller/node";
+import { nodeAtom } from "../store/atom/node";
+import DropDownButton from "../ui/DropDownButton";
 
 const errorInitalState = {
   toNameErrorMessage: "",
@@ -33,12 +35,26 @@ const AddParcelForm = () => {
   const [parcel, setParcel] = useState<Parcel | null>(null);
   const [allParcel, setAllParcel] = useRecoilState(parcelAtom);
   const { slug } = useParams();
+  const [allNodes, setAllNodes] = useRecoilState(nodeAtom);
+
+  let nodeData = allNodes.map((item) => ({
+    id: item.id,
+    value: item.nodeName,
+    label: item.nodeCity,
+  }));
 
   useEffect(() => {
-    async function loadParcelData() {
-      return (await getAllParcelData()).parcel;
+    if (allNodes.length === 0) {
+      getAllNodesDetails().then((response) => {
+        if (response.node.length > 0) {
+          setAllNodes(response.node);
+          console.log("Node data loaded to Recoil.");
+        }
+      });
     }
+  }, [allNodes, setAllNodes]);
 
+  useEffect(() => {
     if (slug.length > 1) {
       if (Number(slug[1])) {
         let finalParcel: Parcel[] = [];
@@ -94,7 +110,7 @@ const AddParcelForm = () => {
       }));
       return;
     }
-    if (validateInput(formData.get("to-city")?.toString())) {
+    if (validateInput(formData.get("to-city-dropdown")?.toString())) {
       setErrorMessage((prevState) => ({
         ...prevState,
         toCityErrorMessage: errorMessageText,
@@ -122,7 +138,7 @@ const AddParcelForm = () => {
       }));
       return;
     }
-    if (validateInput(formData.get("from-city")?.toString())) {
+    if (validateInput(formData.get("from-city-dropdown")?.toString())) {
       setErrorMessage((prevState) => ({
         ...prevState,
         fromCityErrorMessage: errorMessageText,
@@ -132,15 +148,17 @@ const AddParcelForm = () => {
     setErrorMessage(errorInitalState);
     const currentDate = new Date();
 
+    console.log(`Node data = ${formData.get("to-city-dropdown")?.toString()}`);
+
     let newParcel = {
       toName: formData.get("to-name"),
       toPhone: formData.get("to-phone"),
       toAddress: formData.get("to-address"),
-      toCity: formData.get("to-city"),
+      toCity: formData.get("to-city-dropdown"),
       fromName: formData.get("from-name"),
       fromPhone: formData.get("from-phone"),
       fromAddress: formData.get("from-address"),
-      fromCity: formData.get("from-city"),
+      fromCity: formData.get("from-city-dropdown"),
       currentStatus: finalStatuses.inTrasit,
       dispatchDate: new Date(currentDate.setDate(currentDate.getDate() + 1)),
       expectedDate: new Date(currentDate.setDate(currentDate.getDate() + 4)),
@@ -220,12 +238,10 @@ const AddParcelForm = () => {
       {errorMessage.toAddressErrorMessage !== "" && (
         <ErrorMessage errorMsg={errorMessage.toAddressErrorMessage} />
       )}
-      <Input
-        id={"to-city"}
-        title={"Receiver City"}
-        type={"text"}
-        placeholder={"City"}
-        valueText={parcel ? parcel.toCity : ""}
+      <DropDownButton
+        id="to-city-dropdown"
+        header="Receiver Node"
+        options={nodeData}
       />
       {errorMessage.toCityErrorMessage !== "" && (
         <ErrorMessage errorMsg={errorMessage.toCityErrorMessage} />
@@ -266,12 +282,10 @@ const AddParcelForm = () => {
       {errorMessage.fromAddressErrorMessage !== "" && (
         <ErrorMessage errorMsg={errorMessage.fromAddressErrorMessage} />
       )}
-      <Input
-        id={"from-city"}
-        title={"Sender City"}
-        type={"text"}
-        placeholder={"City"}
-        valueText={parcel ? parcel.fromCity : ""}
+      <DropDownButton
+        id="from-city-dropdown"
+        header="Sender Node"
+        options={nodeData}
       />
       {errorMessage.fromCityErrorMessage !== "" && (
         <ErrorMessage errorMsg={errorMessage.fromCityErrorMessage} />

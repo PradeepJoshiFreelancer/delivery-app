@@ -4,7 +4,9 @@ import React from "react";
 
 type Props = {};
 
-const AddUpdateParcel = (props: Props) => {
+const AddUpdateNode = (props: Props) => {
+  console.log("AddUpdateNode page loaded");
+
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <Card className="w-full md:mt-0 sm:max-w-md xl:p-0">
@@ -17,4 +19,4 @@ const AddUpdateParcel = (props: Props) => {
   );
 };
 
-export default AddUpdateParcel;
+export default AddUpdateNode;

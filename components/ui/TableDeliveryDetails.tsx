@@ -5,25 +5,6 @@ type Props = {
 };
 
 const TableDeliveryDetails = ({ trackingDetails }: Props) => {
-  // let status = "";
-  // switch (trackingDetails.currentStatus) {
-  //   case "1": {
-  //     status = "Yet to Dispatch";
-  //     break;
-  //   }
-  //   case "2": {
-  //     status = "In Transit";
-  //     break;
-  //   }
-  //   case "3": {
-  //     status = "Out for deivery";
-  //     break;
-  //   }
-  //   default: {
-  //     status = "Delivered";
-  //     break;
-  //   }
-  // }
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -67,7 +48,7 @@ const TableDeliveryDetails = ({ trackingDetails }: Props) => {
             </td>
             <td className="px-6 py-4">{trackingDetails.fromName}</td>
             <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              From City:
+              From Node:
             </td>
             <td className="px-6 py-4">{trackingDetails.fromCity}</td>
           </tr>
@@ -80,7 +61,7 @@ const TableDeliveryDetails = ({ trackingDetails }: Props) => {
             </td>
             <td className="px-6 py-4">{trackingDetails.toName}</td>
             <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              To City:
+              To Node:
             </td>
             <td className="px-6 py-4">{trackingDetails.toCity}</td>
           </tr>

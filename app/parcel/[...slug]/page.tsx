@@ -5,6 +5,8 @@ import React from "react";
 type Props = {};
 
 const AddUpdateParcel = (props: Props) => {
+  console.log("AddUpdateParcel slug page loaded");
+
   return (
     <div className="flex flex-col items-center justify-center w-full px-6 py-8 mx-auto md:h-screen lg:py-0">
       <Card className="w-full md:mt-0 sm:max-w-md xl:p-0">

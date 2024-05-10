@@ -1,5 +1,5 @@
 import AdminSearchForm from "@/components/forms/admin-search";
-import NodeTable from "@/components/tables/node";
+import NodeTable from "@/components/ui/tables/node";
 import ActionButtons from "@/components/ui/admin/Action";
 import BottonNavigation from "@/components/ui/admin/BottonNavigation";
 import React from "react";
@@ -7,6 +7,8 @@ import React from "react";
 type Props = {};
 
 const NodeTracking = (props: Props) => {
+  console.log("NodeTracking page loaded");
+
   return (
     <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
       <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
