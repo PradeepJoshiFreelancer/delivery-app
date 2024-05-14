@@ -2,8 +2,6 @@ import SigninForm from "@/components/forms/signin-form";
 import { Card, CardTitle } from "@/components/ui/card";
 
 const Signin = () => {
-  console.log("Signin page loaded");
-
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <Card className="w-full md:mt-0 sm:max-w-md xl:p-0">

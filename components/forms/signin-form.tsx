@@ -3,6 +3,7 @@ import { signIn } from "next-auth/react";
 import React from "react";
 import Input from "../ui/Input";
 import { toast } from "react-toastify";
+import { redirect } from "next/navigation";
 
 type Props = {};
 
@@ -11,11 +12,16 @@ const SigninForm = (props: Props) => {
     const response = await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
-      redirect: true,
+      redirect: false,
       callbackUrl: "http://localhost:3000",
     });
-    if (response?.status === 200) toast.success("Login Successfull!");
-    else toast.error("Invalid credentials! Unable to login.");
+    if (response?.error !== null) {
+      toast.error("Invalid credentials! Unable to login.");
+      formData.set("password", "");
+    } else {
+      toast.success("Login Successfull!");
+      redirect("/");
+    }
   };
   return (
     <form className="space-y-4 md:space-y-6" action={onSubmitHandller}>

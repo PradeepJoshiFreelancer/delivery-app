@@ -1,18 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Input from "../ui/Input";
-import { redirect, useParams, usePathname } from "next/navigation";
-import {
-  addNewNode,
-  getAllNodesDetails,
-  updateNodeData,
-} from "../store/handller/node";
+import { redirect, useParams } from "next/navigation";
+import { addNewNode, updateNodeData } from "../store/handller/node";
 import { toast } from "react-toastify";
 import ErrorMessage from "../ui/ErrorMessage";
-import { useRecoilState, useRecoilValue } from "recoil";
 import { Node } from "@prisma/client";
+import useLoadtoRecoil from "../hook/useLoadtoRecoil";
+import { useSetRecoilState } from "recoil";
 import { nodeAtom } from "../store/atom/node";
-import { updateNode } from "@/prisma/lib/node";
 
 const nodeInitalState = {
   nodeNameErrorMessage: "",
@@ -23,39 +19,23 @@ const AddNodeForm = () => {
   const [errors, setErrors] = useState(nodeInitalState);
   const [isEditing, setIsEditing] = useState(false);
   const [node, setNode] = useState<Node | null>(null);
-  const [allNode, setAllNode] = useRecoilState(nodeAtom);
+  const { allNodes } = useLoadtoRecoil({ loadAllNodes: true });
+  const setAllNodes = useSetRecoilState(nodeAtom);
   const { slug } = useParams();
 
   useEffect(() => {
     if (slug.length > 1) {
       if (Number(slug[1])) {
-        let finalNode: Node[] = [];
-
-        if (allNode.length === 0) {
-          getAllNodesDetails().then((response) => {
-            finalNode = response.node;
-            const nodeIndex = finalNode.findIndex(
-              (item) => item.id === Number(+slug[1])
-            );
-
-            if (nodeIndex !== -1) {
-              setNode(finalNode[nodeIndex]);
-              setIsEditing(true);
-            }
-          });
-        } else {
-          finalNode = allNode;
-          const nodeIndex = finalNode.findIndex(
-            (item) => item.id === Number(+slug[1])
-          );
-          if (nodeIndex !== -1) {
-            setNode(finalNode[nodeIndex]);
-            setIsEditing(true);
-          }
+        const nodeIndex = allNodes.findIndex(
+          (item: Node) => item.id === Number(+slug[1])
+        );
+        if (nodeIndex !== -1) {
+          setNode(allNodes[nodeIndex]);
+          setIsEditing(true);
         }
       }
     }
-  }, [slug, allNode]);
+  }, [slug, allNodes]);
 
   const onSubmitHandller = async (formData: FormData) => {
     if (!formData.get("node-name") && formData.get("node-name") === "") {
@@ -92,19 +72,23 @@ const AddNodeForm = () => {
     if (isEditing && node) {
       newNode.createdAt = node.createdAt;
       response = await updateNodeData(node.id, newNode);
-      const updatedNodeIndex = allNode.findIndex((item) => item.id === node.id);
+      const updatedNodeIndex = allNodes.findIndex(
+        (item) => item.id === node.id
+      );
       if (updatedNodeIndex !== -1 && response.node) {
         console.log(updatedNodeIndex);
 
-        const updatedAllNodes = [...allNode];
+        const updatedAllNodes = [...allNodes];
         updatedAllNodes[updatedNodeIndex] = response.node;
-        console.log(JSON.stringify(response));
-        console.log(JSON.stringify(updatedAllNodes));
 
-        setAllNode(updatedAllNodes);
+        setAllNodes(updatedAllNodes);
       }
     } else {
       response = await addNewNode(newNode);
+      if (response.status === 200 && response.node) {
+        const latestNodes = [...allNodes, response.node];
+        setAllNodes(latestNodes);
+      }
     }
     if (response && response.status === 200 && response.node) {
       toast.success(

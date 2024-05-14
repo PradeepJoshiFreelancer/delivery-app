@@ -6,8 +6,6 @@ type Props = {
 };
 
 const TimeLine = ({ deliveryTransitDetails }: Props) => {
-  console.log(JSON.stringify(deliveryTransitDetails));
-
   return (
     <div className="p-4">
       <h2 className="text-xl font-extrabold text-blue-600 my-4">

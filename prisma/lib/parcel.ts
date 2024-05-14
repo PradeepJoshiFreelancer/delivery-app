@@ -36,7 +36,6 @@ export const deleteParcel = async (parcelId: number) => {
     });
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
-      console.log("PrismaClientKnownRequestError happened");
     }
   }
   revalidatePath("/**");

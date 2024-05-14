@@ -5,7 +5,7 @@ export const parcelAtom = atom<Parcel[]>({
   key: "parcelAtom",
   default: [],
 });
-export const parcelStatus = atom<any[]>({
+export const parcelStatusAtom = atom<any[]>({
   key: "parcelStatus",
   default: [],
 });

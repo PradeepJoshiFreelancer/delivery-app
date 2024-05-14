@@ -76,10 +76,11 @@ export const deleteParcelById = async (parcelId: number) => {
   return { status: 200, parcel };
 };
 
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
 // get all Parcel data
 export const getAllParcelData = async () => {
   const allParcels = await getAllParcel();
-
   return { status: 200, parcel: allParcels };
 };
 

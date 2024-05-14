@@ -26,7 +26,6 @@ const NodeTable = (props: Props) => {
       getAllNodesDetails().then((response) => {
         if (response.node.length > 0) {
           setAllNodes(response.node);
-          console.log("Node data loaded to Recoil.");
         }
       });
     }
@@ -40,7 +39,6 @@ const NodeTable = (props: Props) => {
       );
       toast.success(`Node ${response.node?.nodeName} deleted!!`);
     }
-    console.log(4);
   }
 
   return (

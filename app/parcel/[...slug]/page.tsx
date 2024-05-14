@@ -1,10 +1,7 @@
 import AddParcelForm from "@/components/forms/add-parcel";
 import { Card, CardTitle } from "@/components/ui/card";
-import React from "react";
 
-type Props = {};
-
-const AddUpdateParcel = (props: Props) => {
+const AddUpdateParcel = () => {
   console.log("AddUpdateParcel slug page loaded");
 
   return (

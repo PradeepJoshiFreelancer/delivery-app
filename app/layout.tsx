@@ -4,6 +4,8 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import { cn } from "@/components/lib/utils";
 import { Providers } from "@/provider";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,7 +31,9 @@ export default function RootLayout({
         )}
       >
         <Providers>
-          <Sidebar>{children}</Sidebar>
+          <Suspense fallback={<Loading />}>
+            <Sidebar>{children}</Sidebar>
+          </Suspense>
         </Providers>
       </body>
     </html>

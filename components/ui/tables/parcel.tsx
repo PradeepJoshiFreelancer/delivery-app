@@ -8,7 +8,7 @@ import {
   getAllParcelTrackingData,
 } from "../../store/handller/parcel";
 import { useRecoilState } from "recoil";
-import { parcelAtom, parcelStatus } from "../../store/atom/parcel";
+import { parcelAtom, parcelStatusAtom } from "../../store/atom/parcel";
 import { toast } from "react-toastify";
 
 type Props = {};
@@ -25,7 +25,7 @@ const tbaleHeaders = [
 const ParcelTable = (props: Props) => {
   const [allParcel, setAllParcel] = useRecoilState(parcelAtom);
   const [allParcelTracking, setAllParcelTracking] =
-    useRecoilState(parcelStatus);
+    useRecoilState(parcelStatusAtom);
   useEffect(() => {
     if (allParcel.length === 0) {
       getAllParcelData().then((response) => {

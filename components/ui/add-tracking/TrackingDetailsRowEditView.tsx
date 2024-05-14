@@ -5,9 +5,8 @@ import Button from "../Button";
 import { useSession } from "next-auth/react";
 import { addNewParcelTrackingStatus } from "@/components/store/handller/parcelTrackingStatus";
 import { toast } from "react-toastify";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { parcelStatus } from "@/components/store/atom/parcel";
-import { log } from "console";
+import { useSetRecoilState } from "recoil";
+import { parcelStatusAtom } from "@/components/store/atom/parcel";
 
 type Props = {
   parcelId: number;
@@ -24,8 +23,7 @@ const TrackingDetailsRowEditView = ({
   statusesOptions,
 }: Props) => {
   const { data: session } = useSession();
-  const setTrackingStatus = useSetRecoilState(parcelStatus);
-  console.log(`session = ${JSON.stringify(session)}`);
+  const setTrackingStatus = useSetRecoilState(parcelStatusAtom);
 
   let nodeData = allNodes.map((item) => ({
     id: item.id,
@@ -61,8 +59,6 @@ const TrackingDetailsRowEditView = ({
     const response = await addNewParcelTrackingStatus(transitData);
 
     if (response.status === 200) {
-      console.log(`response = ${response}`);
-
       setTrackingStatus((prevState) => [...prevState, response.parcelTracking]);
       toast.success("Tracking data saved sucessfully!");
     } else {

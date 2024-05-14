@@ -1,23 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import RowHeader from "../admin/RowHeader";
-import {
-  deleteParcelById,
-  getAllParcelData,
-  getAllParcelTrackingData,
-} from "../../store/handller/parcel";
-import { useRecoilState } from "recoil";
-import { parcelAtom, parcelStatus } from "../../store/atom/parcel";
+
+import { useSetRecoilState } from "recoil";
+import { parcelStatusAtom } from "../../store/atom/parcel";
 import { toast } from "react-toastify";
-import DropDownButton, { optionInterface } from "../DropDownButton";
-import { nodeAtom } from "@/components/store/atom/node";
-import { getAllNodesDetails } from "@/components/store/handller/node";
+import { optionInterface } from "../DropDownButton";
 import { finalStatuses } from "@prisma/client";
-import Button from "../Button";
-import TrackingDetailsRowEditView from "../add-tracking/TrackingDetailsRowEditView";
-import { CardTitle } from "../card";
-import Link from "next/link";
 import { deleteParcelTrackingById } from "@/components/store/handller/parcelTrackingStatus";
+import useLoadtoRecoil from "@/components/hook/useLoadtoRecoil";
+import { CardTitle } from "../card";
+import TrackingDetailsRowEditView from "../add-tracking/TrackingDetailsRowEditView";
+import RowHeader from "../admin/RowHeader";
+import Link from "next/link";
 
 type Props = {
   parcelId: number;
@@ -30,10 +24,11 @@ const tbaleHeaders = [
 ];
 
 const TrackingDetails = ({ parcelId }: Props) => {
-  const [allParcel, setAllParcel] = useRecoilState(parcelAtom);
-  const [allParcelTracking, setAllParcelTracking] =
-    useRecoilState(parcelStatus);
-  const [allNodes, setAllNodes] = useRecoilState(nodeAtom);
+  const { allParcelTracking, allNodes } = useLoadtoRecoil({
+    loadAllNodes: true,
+    loadAllParcelTracking: true,
+  });
+  const setAllParcelTracking = useSetRecoilState(parcelStatusAtom);
   const [statusesOptions, setStatusOptions] = useState<optionInterface[]>([]);
 
   const currentParcelTrackingData = allParcelTracking.filter(
@@ -54,34 +49,6 @@ const TrackingDetails = ({ parcelId }: Props) => {
     }
     setStatusOptions(statusesArr);
   }, [setStatusOptions]);
-
-  useEffect(() => {
-    if (allNodes.length === 0) {
-      getAllNodesDetails().then((response) => {
-        if (response.node.length > 0) {
-          setAllNodes(response.node);
-          console.log("Node data loaded to Recoil.");
-        }
-      });
-    }
-  }, [allNodes, setAllNodes]);
-
-  useEffect(() => {
-    if (allParcel.length === 0) {
-      getAllParcelData().then((response) => {
-        setAllParcel(response.parcel);
-        console.log("Parcel data loaded to Recoil.");
-      });
-    }
-    if (allParcelTracking.length === 0) {
-      getAllParcelTrackingData().then((response) => {
-        console.log(response);
-
-        setAllParcelTracking(response.allParcelTracking);
-        console.log("Tracking data loaded to Recoil.");
-      });
-    }
-  }, [allParcel, setAllParcel, allParcelTracking, setAllParcelTracking]);
 
   async function parcelTrackingDeleteHandller(trackingId: number) {
     const response = await deleteParcelTrackingById(trackingId);
@@ -128,12 +95,6 @@ const TrackingDetails = ({ parcelId }: Props) => {
               <td className="px-4 py-3">{item.status}</td>
               <td className="px-4 py-3">
                 <div className="flex justify-around">
-                  <Link
-                    href={`/node/update-node/${item.id}`}
-                    className="text-blue-600 underline"
-                  >
-                    Edit
-                  </Link>
                   <Link
                     href="#"
                     onClick={() => parcelTrackingDeleteHandller(item.id)}
